@@ -1,0 +1,14 @@
+version: '1'
+services:
+  front-end:
+    image: $DOCKER_USERNAME/front-end-semester-3-2023-fontys
+    ports:
+      - "5173:5173"
+  login-front-end:
+    image: $DOCKER_USERNAME/front-end-login-semester-3-2023-fontys
+    ports:
+      - "4200:4200"
+  back-end:
+    image: $DOCKER_USERNAME/back-end-semester-3-2023-fontys
+    ports:
+      - "8080:8080"

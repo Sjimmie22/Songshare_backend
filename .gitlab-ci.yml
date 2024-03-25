@@ -1,0 +1,43 @@
+stages:
+  - build
+  - test
+  - deploy
+
+backend:
+  stage: build
+  before_script:
+    - echo $Env:Path;
+  script:
+    - mvn clean install -X -DskipTests
+
+backend_tests:
+  stage: test
+  script:
+    - mvn test -X
+
+Docker_building:
+  stage: deploy
+
+  variables:
+    DOCKER_IMAGE_NAME: $DOCKER_USERNAME"/back-end-semester-3-2023-fontys"
+    DOCKER_REGISTRY: "docker.io"
+
+  before_script:
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin "$DOCKER_REGISTRY"
+
+  script:
+    - docker build -t "$DOCKER_IMAGE_NAME" .
+    - docker push "$DOCKER_IMAGE_NAME"
+    
+  only:
+    - main
+
+Deploy:
+  stage: deploy
+ 
+  script:
+    - set DOCKER_USERNAME=$DOCKER_USERNAME
+    - docker-compose up -d
+  only:
+    - main
+  when: manual
